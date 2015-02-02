@@ -23,7 +23,7 @@ namespace NServiceBus.Azure.Transports.WindowsAzureServiceBus
 
         static ConcurrentDictionary<string, bool> rememberTopicExistence = new ConcurrentDictionary<string, bool>();
         static ConcurrentDictionary<string, bool> rememberSubscriptionExistence = new ConcurrentDictionary<string, bool>();
-     
+
         ILog logger = LogManager.GetLogger(typeof(AzureServiceBusSubscriptionCreator));
 
         public AzureServiceBusSubscriptionCreator(ICreateNamespaceManagers createNamespaceManagers, Configure config, ICreateTopics topicCreator)
@@ -33,19 +33,12 @@ namespace NServiceBus.Azure.Transports.WindowsAzureServiceBus
             this.topicCreator = topicCreator;
         }
 
-        public SubscriptionDescription Create(Address topic, Type eventType, string subscriptionname)
+        public SubscriptionDescription Create(string topicName, string @namespace, Type eventType, string subscriptionname, string forwardTo = null)
         {
-            var topicPath = topic.Queue;
-            var namespaceClient = createNamespaceManagers.Create(topic.Machine);
+            var namespaceClient = createNamespaceManagers.Create(@namespace);
 
-            var filter = "1=1"; 
+            var description = new SubscriptionDescription(topicName, subscriptionname)
 
-            if (eventType != null)
-            {
-                filter = new ServicebusSubscriptionFilterBuilder().BuildFor(eventType);
-            }
-
-            var description = new SubscriptionDescription(topicPath, subscriptionname)
             {
                 // same as queue section from AzureServiceBusQueueConfig
                 LockDuration = LockDuration,
@@ -54,96 +47,74 @@ namespace NServiceBus.Azure.Transports.WindowsAzureServiceBus
                 EnableDeadLetteringOnMessageExpiration = EnableDeadLetteringOnMessageExpiration,
                 MaxDeliveryCount = MaxDeliveryCount,
                 EnableBatchedOperations = EnableBatchedOperations,
-                EnableDeadLetteringOnFilterEvaluationExceptions = EnableDeadLetteringOnFilterEvaluationExceptions
+                EnableDeadLetteringOnFilterEvaluationExceptions = EnableDeadLetteringOnFilterEvaluationExceptions,
+                ForwardTo = forwardTo
             };
 
             if (config.CreateQueues())
             {
-                if (!TopicExists(namespaceClient, topicPath))
+                if (!TopicExists(namespaceClient, topicName))
                 {
-                    logger.Info(string.Format("The topic that you're trying to subscribe to, {0}, doesn't exist yet, going to create it...", topicPath));
-                    topicCreator.Create(topic);
+                    logger.Info(string.Format("The topic that you're trying to subscribe to, {0}, doesn't exist yet, going to create it...", topicName));
+                    topicCreator.Create(topicName, namespaceClient);
                 }
-                
+
                 try
                 {
-                    if (!SubscriptionExists(namespaceClient, topicPath, subscriptionname))
+                    if (!SubscriptionExists(namespaceClient, topicName, subscriptionname))
                     {
-                        if (filter != string.Empty)
-                        {
-                            namespaceClient.CreateSubscription(description, new SqlFilter(filter));
-                        }
-                        else
-                        {
-                            namespaceClient.CreateSubscription(description);
-                        }
-                        logger.InfoFormat("Subscription '{0}' on topic '{1}' created", description.Name, topicPath);
+                        namespaceClient.CreateSubscription(description);
+
+                        logger.InfoFormat("Subscription '{0}' on topic '{1}' created", description.Name, topicName);
                     }
                     else
                     {
-                        logger.InfoFormat("Subscription '{0}' on topic '{1}' already exists, skipping creation", description.Name, topicPath);
+                        logger.InfoFormat("Subscription '{0}' on topic '{1}' already exists, skipping creation", description.Name, topicName);
                     }
                 }
                 catch (MessagingEntityAlreadyExistsException)
                 {
                     // the queue already exists or another node beat us to it, which is ok
-                    logger.InfoFormat("Subscription '{0}' on topic '{1}' already exists, another node probably beat us to it", description.Name, topicPath);
+                    logger.InfoFormat("Subscription '{0}' on topic '{1}' already exists, another node probably beat us to it", description.Name, topicName);
                 }
                 catch (TimeoutException)
                 {
-                    logger.InfoFormat("Timeout occured on creation of subscription '{0}' on topic '{1}', going to validate if it doesn't exists", description.Name, topicPath);
+                    logger.InfoFormat("Timeout occured on creation of subscription '{0}' on topic '{1}', going to validate if it doesn't exists", description.Name, topicName);
 
                     // there is a chance that the timeout occurs, but the subscription is created still
                     // check for this
-                    if (!namespaceClient.SubscriptionExists(topicPath, subscriptionname))
+                    if (!namespaceClient.SubscriptionExists(topicName, subscriptionname))
                     {
                         throw;
                     }
                     else
                     {
-                        logger.InfoFormat("Looks like subscription '{0}' on topic '{1}' exists anyway", description.Name, topicPath);
+                        logger.InfoFormat("Looks like subscription '{0}' on topic '{1}' exists anyway", description.Name, topicName);
                     }
                 }
                 catch (MessagingException ex)
                 {
                     if (!ex.IsTransient && !CreationExceptionHandling.IsCommon(ex))
                     {
-                        logger.Fatal(string.Format("{2} {3} occured on subscription creation {0} on topic '{1}'", description.Name, topicPath, (ex.IsTransient ? "Transient" : "Non transient"), ex.GetType().Name), ex);
+                        logger.Fatal(string.Format("{2} {3} occured on subscription creation {0} on topic '{1}'", description.Name, topicName, (ex.IsTransient ? "Transient" : "Non transient"), ex.GetType().Name), ex);
                         throw;
                     }
                     else
                     {
-                        logger.Info(string.Format("{2} {3} occured on subscription creation {0} on topic '{1}'", description.Name, topicPath, (ex.IsTransient ? "Transient" : "Non transient"), ex.GetType().Name), ex);
+                        logger.Info(string.Format("{2} {3} occured on subscription creation {0} on topic '{1}'", description.Name, topicName, (ex.IsTransient ? "Transient" : "Non transient"), ex.GetType().Name), ex);
                     }
                 }
-
-                GuardAgainstSubscriptionReuseAcrossLogicalEndpoints(subscriptionname, namespaceClient, topicPath, filter);
-                
             }
             return description;
         }
 
-        static void GuardAgainstSubscriptionReuseAcrossLogicalEndpoints(string subscriptionname,
-            NamespaceManager namespaceClient, string topicPath, string filter)
-        {
-            var rules = namespaceClient.GetRules(topicPath, subscriptionname);
-            foreach (var rule in rules)
-            {
-                var sqlFilter = rule.Filter as SqlFilter;
-                if (sqlFilter != null && sqlFilter.SqlExpression != filter)
-                {
-                    throw new SubscriptionAlreadyInUseException(
-                        "Looks like this subscriptionname is already taken by another logical endpoint as the sql filter does not match the subscribed eventtype, please choose a different subscription name!");
-                }
-            }
-        }
 
-        public void Delete(Address topic, string subscriptionname)
+        public void Delete(string topicName, string @namespace, string subscriptionname)
         {
-            var namespaceClient = createNamespaceManagers.Create(topic.Machine);
-            if (SubscriptionExists(namespaceClient, topic.Queue, subscriptionname))
+            var namespaceClient = createNamespaceManagers.Create(@namespace);
+            if (SubscriptionExists(namespaceClient, topicName, subscriptionname))
             {
-                namespaceClient.DeleteSubscription(topic.Queue, subscriptionname);
+                namespaceClient.DeleteSubscription(topicName, subscriptionname);
             }
         }
 
@@ -151,9 +122,10 @@ namespace NServiceBus.Azure.Transports.WindowsAzureServiceBus
         {
             var key = topicpath;
             logger.InfoFormat("Checking existence cache for topic '{0}'", topicpath);
-            var exists = rememberTopicExistence.GetOrAdd(key, s => {
-                    logger.InfoFormat("Checking namespace for existance of the topic '{0}'", topicpath);
-                    return namespaceClient.TopicExists(topicpath);
+            var exists = rememberTopicExistence.GetOrAdd(key, s =>
+            {
+                logger.InfoFormat("Checking namespace for existance of the topic '{0}'", topicpath);
+                return namespaceClient.TopicExists(topicpath);
             });
             logger.InfoFormat("Determined that the topic '{0}' {1}", topicpath, exists ? "exists" : "does not exist");
             return exists;
@@ -163,11 +135,12 @@ namespace NServiceBus.Azure.Transports.WindowsAzureServiceBus
         {
             var key = topicpath + subscriptionname;
             logger.InfoFormat("Checking cache for existence of subscription '{0}' on topic '{1}'", subscriptionname, topicpath);
-            var exists = rememberSubscriptionExistence.GetOrAdd(key, s => {
+            var exists = rememberSubscriptionExistence.GetOrAdd(key, s =>
+            {
                 logger.InfoFormat("Checking namespace for subscription '{0}' on  topic '{1}'", subscriptionname, topicpath);
                 return namespaceClient.SubscriptionExists(topicpath, subscriptionname);
             });
-           
+
             logger.InfoFormat("Determined cache that the subscription '{0}' on topic '{1}' {2}", subscriptionname, topicpath, exists ? "exists" : "does not exist");
 
             return exists;

@@ -33,10 +33,14 @@ namespace NServiceBus.Azure.Transports.WindowsAzureServiceBus
             this.config = config;
         }
 
-        public TopicDescription Create(Address address)
+        public TopicDescription Create(string topicName, string @namespace)
         {
-            var topicName = address.Queue;
-            var namespaceClient = createNamespaceManagers.Create(address.Machine);
+            var namespaceclient = createNamespaceManagers.Create(@namespace);
+            return Create(topicName, namespaceclient);
+        }
+
+        public TopicDescription Create(string topicName, NamespaceManager namespaceClient)
+        {
             var description = new TopicDescription(topicName)
             {
                 // same as queue section from AzureServiceBusQueueConfig
@@ -102,6 +106,8 @@ namespace NServiceBus.Azure.Transports.WindowsAzureServiceBus
 
             return description;
         }
+
+
 
         bool TopicExists(NamespaceManager namespaceClient, string topicpath)
         {
