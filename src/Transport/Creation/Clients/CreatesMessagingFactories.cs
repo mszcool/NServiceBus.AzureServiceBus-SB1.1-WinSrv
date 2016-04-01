@@ -23,9 +23,9 @@ namespace NServiceBus.Azure.Transports.WindowsAzureServiceBus
 
         private bool DetectPrivateCloudConnectionString(string connectionString)
         {
-            if (Regex.IsMatch(OnPremPattern, connectionString, RegexOptions.IgnoreCase))
+            if (Regex.IsMatch(connectionString, OnPremPattern, RegexOptions.IgnoreCase))
                 return true;
-            else if (Regex.IsMatch(Pattern, connectionString, RegexOptions.IgnoreCase))
+            else if (Regex.IsMatch(connectionString, Pattern, RegexOptions.IgnoreCase))
                 return false;
             else {
                 throw new ArgumentException($"Invalid Azure Service Bus connection string configured. " +

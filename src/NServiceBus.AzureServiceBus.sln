@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NServiceBus.AzureServiceBus", "Transport\NServiceBus.AzureServiceBus.csproj", "{607C3F29-58D4-4EEC-BFFB-668976CBB5B8}"
 EndProject
@@ -13,6 +13,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nuget", "nuget", "{52AA5A83
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NServiceBus.AzureServiceBus.Tests", "Tests\NServiceBus.AzureServiceBus.Tests.csproj", "{0A5B4346-3C24-4192-B47C-B35706954907}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sample", "Sample", "{C865904D-CF97-4FE6-886A-C4A6B76B9450}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "..\sample\Shared\Shared.csproj", "{A95ED7EF-5D53-41BD-830C-E0C33A9303D5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sender", "..\sample\Sender\Sender.csproj", "{48F718EE-6C45-41BA-80EC-81BF34D4A623}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Receiver", "..\sample\Receiver\Receiver.csproj", "{8CB7261B-6E93-4BE8-A3FA-A3F56A6E85C0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,8 +40,25 @@ Global
 		{0A5B4346-3C24-4192-B47C-B35706954907}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0A5B4346-3C24-4192-B47C-B35706954907}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0A5B4346-3C24-4192-B47C-B35706954907}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A95ED7EF-5D53-41BD-830C-E0C33A9303D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A95ED7EF-5D53-41BD-830C-E0C33A9303D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A95ED7EF-5D53-41BD-830C-E0C33A9303D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A95ED7EF-5D53-41BD-830C-E0C33A9303D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48F718EE-6C45-41BA-80EC-81BF34D4A623}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48F718EE-6C45-41BA-80EC-81BF34D4A623}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48F718EE-6C45-41BA-80EC-81BF34D4A623}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48F718EE-6C45-41BA-80EC-81BF34D4A623}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CB7261B-6E93-4BE8-A3FA-A3F56A6E85C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CB7261B-6E93-4BE8-A3FA-A3F56A6E85C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CB7261B-6E93-4BE8-A3FA-A3F56A6E85C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CB7261B-6E93-4BE8-A3FA-A3F56A6E85C0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A95ED7EF-5D53-41BD-830C-E0C33A9303D5} = {C865904D-CF97-4FE6-886A-C4A6B76B9450}
+		{48F718EE-6C45-41BA-80EC-81BF34D4A623} = {C865904D-CF97-4FE6-886A-C4A6B76B9450}
+		{8CB7261B-6E93-4BE8-A3FA-A3F56A6E85C0} = {C865904D-CF97-4FE6-886A-C4A6B76B9450}
 	EndGlobalSection
 EndGlobal
