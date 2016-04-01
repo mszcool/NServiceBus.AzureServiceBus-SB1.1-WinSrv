@@ -45,7 +45,9 @@ namespace NServiceBus.Azure.Transports.WindowsAzureServiceBus
                 DefaultMessageTimeToLive = DefaultMessageTimeToLive,
                 DuplicateDetectionHistoryTimeWindow = DuplicateDetectionHistoryTimeWindow,
                 EnableBatchedOperations = EnableBatchedOperations,
-                EnablePartitioning = EnablePartitioning
+
+                // mszcool - Not Supported for Service Bus 1.1 for Windows Server
+                // EnablePartitioning = EnablePartitioning
             };
 
             try

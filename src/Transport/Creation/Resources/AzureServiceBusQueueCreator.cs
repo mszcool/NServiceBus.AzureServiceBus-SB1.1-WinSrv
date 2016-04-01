@@ -49,7 +49,8 @@
                 DuplicateDetectionHistoryTimeWindow = DuplicateDetectionHistoryTimeWindow,
                 MaxDeliveryCount = MaxDeliveryCount,
                 EnableBatchedOperations = EnableBatchedOperations,
-                EnablePartitioning = EnablePartitioning
+                // mszcool - Not Supported on Service Bus 1.1 for Windows Server
+                // EnablePartitioning = EnablePartitioning
             };
 
             try
