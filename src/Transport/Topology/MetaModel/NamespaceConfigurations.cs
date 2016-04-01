@@ -60,6 +60,19 @@
             }
         }
 
+        public bool GetIsPrivateCloud(string name)
+        {
+            try
+            {
+                var selected = _inner.Single(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+                return selected.ConnectionString.IsPrivateCloud;
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new KeyNotFoundException($"Namespace with name `{name}` hasn't been registered", ex);
+            }
+        }
+
         public IEnumerator<NamespaceInfo> GetEnumerator()
         {
             return _inner.GetEnumerator();

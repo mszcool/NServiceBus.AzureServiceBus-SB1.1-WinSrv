@@ -48,9 +48,11 @@ namespace NServiceBus.Azure.WindowsAzureServiceBus.Tests.Creation
             Assert.AreEqual(TimeSpan.MaxValue, topicDescription.DefaultMessageTimeToLive);
             Assert.AreEqual(TimeSpan.FromMilliseconds(600000), topicDescription.DuplicateDetectionHistoryTimeWindow);
             Assert.IsTrue(topicDescription.EnableBatchedOperations);
-            Assert.IsFalse(topicDescription.EnableExpress);
+            // mszcool - not supported by Service Bus 1.1 for Windows Server
+            // Assert.IsFalse(topicDescription.EnableExpress);
             Assert.IsFalse(topicDescription.EnableFilteringMessagesBeforePublishing);
-            Assert.IsFalse(topicDescription.EnablePartitioning);
+            // mszcool - not supported by Service Bus 1.1 for Windows Server
+            // Assert.IsFalse(topicDescription.EnablePartitioning);
             Assert.AreEqual(1024, topicDescription.MaxSizeInMegabytes);
             Assert.IsFalse(topicDescription.RequiresDuplicateDetection);
             Assert.IsFalse(topicDescription.SupportOrdering);
@@ -193,24 +195,27 @@ namespace NServiceBus.Azure.WindowsAzureServiceBus.Tests.Creation
         [Test]
         public async Task Should_set_EnablePartitioning_on_created_entity()
         {
-            var namespaceManager = new NamespaceManagerAdapter(NamespaceManager.CreateFromConnectionString(AzureServiceBusConnectionString.Value));
-            const string topicPath = "mytopic9";
+            // mszcool - not supported by Service Bus 1.1 for Windows Server
+            await Task.Run(() => Assert.Inconclusive("Not supported by Service Bus 1.1 for Windows Server!"));
 
-            //clean up before test starts
-            await namespaceManager.DeleteTopic(topicPath);
+            //var namespaceManager = new NamespaceManagerAdapter(NamespaceManager.CreateFromConnectionString(AzureServiceBusConnectionString.Value));
+            //const string topicPath = "mytopic9";
 
-            var settings = new DefaultConfigurationValues().Apply(new SettingsHolder());
-            var extensions = new AzureServiceBusTopologySettings(settings);
+            ////clean up before test starts
+            //await namespaceManager.DeleteTopic(topicPath);
 
-            extensions.Topics().EnablePartitioning(true);
+            //var settings = new DefaultConfigurationValues().Apply(new SettingsHolder());
+            //var extensions = new AzureServiceBusTopologySettings(settings);
 
-            var creator = new AzureServiceBusTopicCreator(settings);
+            //extensions.Topics().EnablePartitioning(true);
+
+            //var creator = new AzureServiceBusTopicCreator(settings);
            
-            await creator.Create(topicPath, namespaceManager);
+            //await creator.Create(topicPath, namespaceManager);
 
-            var foundTopic = await namespaceManager.GetTopic(topicPath);
+            //var foundTopic = await namespaceManager.GetTopic(topicPath);
 
-            Assert.IsTrue(foundTopic.EnablePartitioning);
+            //Assert.IsTrue(foundTopic.EnablePartitioning);
         }
 
         [Test]
@@ -292,9 +297,11 @@ namespace NServiceBus.Azure.WindowsAzureServiceBus.Tests.Creation
             Assert.AreEqual(TimeSpan.MaxValue, foundTopic.DefaultMessageTimeToLive);
             Assert.AreEqual(TimeSpan.FromMilliseconds(600000), foundTopic.DuplicateDetectionHistoryTimeWindow);
             Assert.IsTrue(foundTopic.EnableBatchedOperations);
-            Assert.IsFalse(foundTopic.EnableExpress);
+            // mszcool - not supported by Service Bus 1.1 for Windows Server
+            // Assert.IsFalse(foundTopic.EnableExpress);
             Assert.IsFalse(foundTopic.EnableFilteringMessagesBeforePublishing);
-            Assert.IsFalse(foundTopic.EnablePartitioning);
+            // Assert.IsFalse(foundTopic.EnablePartitioning);
+            // mszcool - not supported by Service Bus 1.1 for Windows Server
             Assert.AreEqual(1024, foundTopic.MaxSizeInMegabytes);
             Assert.IsFalse(foundTopic.RequiresDuplicateDetection);
             Assert.IsFalse(foundTopic.SupportOrdering);
@@ -373,7 +380,8 @@ namespace NServiceBus.Azure.WindowsAzureServiceBus.Tests.Creation
             extensions.Topics().DescriptionFactory((topicPath, readOnlySettings) => new TopicDescription(topicPath)
             {
                 AutoDeleteOnIdle = TimeSpan.FromMinutes(100),
-                EnableExpress = true
+                // mszcool - not supported by Service Bus 1.1 for Windows Server
+                // EnableExpress = true
             });
 
             var creator = new AzureServiceBusTopicCreator(settings);
@@ -393,7 +401,8 @@ namespace NServiceBus.Azure.WindowsAzureServiceBus.Tests.Creation
             {
                 MaxSizeInMegabytes = 2048,
                 RequiresDuplicateDetection = true,
-                EnablePartitioning = true
+                // mszcool - not supported by Service Bus 1.1 for Windows Server
+                // EnablePartitioning = true
             });
 
             var settings = new DefaultConfigurationValues().Apply(new SettingsHolder());
@@ -402,7 +411,8 @@ namespace NServiceBus.Azure.WindowsAzureServiceBus.Tests.Creation
             {
                 MaxSizeInMegabytes = 1024,
                 RequiresDuplicateDetection = false,
-                EnablePartitioning = false
+                // mszcool - not supported by Service Bus 1.1 for Windows Server
+                // EnablePartitioning = false
             });
 
             var creator = new AzureServiceBusTopicCreator(settings);

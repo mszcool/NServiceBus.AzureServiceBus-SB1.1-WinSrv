@@ -44,7 +44,21 @@ namespace NServiceBus.AzureServiceBus
         {
             var namespaceManager = _namespaceManagers.Get(namespaceName);
             var factorySettings = _settingsFactory(namespaceName);
-            var inner = MessagingFactory.Create(namespaceManager.Address, factorySettings);
+
+            // mszcool - This type of instantiation does not work with Service Bus for Windows Server 1.1
+            //           Reason: it does not work with different ports for namespace manager and transport-operations which is a common setup
+            var namespacesDefinition = _settings.Get<NamespaceConfigurations>(WellKnownConfigurationKeys.Topology.Addressing.Partitioning.Namespaces);
+            var inner = default(MessagingFactory);
+            if (namespacesDefinition.GetIsPrivateCloud(namespaceName))
+            {
+                var connectionString = namespacesDefinition.GetConnectionString(namespaceName);
+                inner = MessagingFactory.CreateFromConnectionString(connectionString);
+            }
+            else
+            {
+                inner = MessagingFactory.Create(namespaceManager.Address, factorySettings);
+            }
+
             if (_settings.HasExplicitValue(WellKnownConfigurationKeys.Connectivity.MessagingFactories.RetryPolicy))
             {
                 inner.RetryPolicy = _settings.Get<RetryPolicy>(WellKnownConfigurationKeys.Connectivity.MessagingFactories.RetryPolicy);

@@ -89,7 +89,8 @@ namespace NServiceBus.AzureServiceBus
                 SendVia = sendVia,
                 ViaEntityPath = GetViaEntityPathFor(context?.Entity),
                 ViaConnectionString = context?.Entity.Namespace.ConnectionString,
-                ViaPartitionKey = context?.IncomingBrokeredMessage.PartitionKey
+                // mszcool - not supported by Service Bus 1.1 for Windows Server
+                // ViaPartitionKey = context?.IncomingBrokeredMessage.PartitionKey
             };
         }
 

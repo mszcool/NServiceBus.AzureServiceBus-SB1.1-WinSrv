@@ -59,7 +59,7 @@ namespace NServiceBus.Azure.WindowsAzureServiceBus.Tests.Sending
             };
 
             var brokeredMessage = converter.Convert(batchedOperation, new RoutingOptions());
-
+                                                    
             var sr = new StreamReader(brokeredMessage.GetBody<Stream>());
             var body = sr.ReadToEnd();
 
@@ -235,24 +235,27 @@ namespace NServiceBus.Azure.WindowsAzureServiceBus.Tests.Sending
         [Test]
         public void Should_set_ViaPartitionKey_if_partition_key_is_available_and_sending_via_option_is_enabled()
         {
-            var settings = new DefaultConfigurationValues().Apply(new SettingsHolder());
-            var converter = new DefaultBatchedOperationsToBrokeredMessagesConverter(settings, new FakeMapper());
+            // mszcool - not supported by Service Bus 1.1 for Windows Server
+            Assert.Inconclusive("Not supported by Service Bus 1.1 for Windows Server!");
 
-            var routingOptions = new RoutingOptions
-            {
-                SendVia = true,
-                ViaPartitionKey = "partitionkey"
-            };
+            //var settings = new DefaultConfigurationValues().Apply(new SettingsHolder());
+            //var converter = new DefaultBatchedOperationsToBrokeredMessagesConverter(settings, new FakeMapper());
 
-            var batchedOperation = new BatchedOperation
-            {
-                Message = new OutgoingMessage("SomeId", new Dictionary<string, string>(), new byte[0]),
-                DeliveryConstraints = new List<DeliveryConstraint>()
-            };
+            //var routingOptions = new RoutingOptions
+            //{
+            //    SendVia = true,
+            //    ViaPartitionKey = "partitionkey"
+            //};
 
-            var brokeredMessage = converter.Convert(batchedOperation, routingOptions);
+            //var batchedOperation = new BatchedOperation
+            //{
+            //    Message = new OutgoingMessage("SomeId", new Dictionary<string, string>(), new byte[0]),
+            //    DeliveryConstraints = new List<DeliveryConstraint>()
+            //};
 
-            Assert.IsTrue(brokeredMessage.ViaPartitionKey == "partitionkey");
+            //var brokeredMessage = converter.Convert(batchedOperation, routingOptions);
+
+            //Assert.IsTrue(brokeredMessage.ViaPartitionKey == "partitionkey");
         }
 
         [TestCase(SupportedBrokeredMessageBodyTypes.Stream, "application/octect-stream")]
@@ -298,7 +301,7 @@ namespace NServiceBus.Azure.WindowsAzureServiceBus.Tests.Sending
 
             var brokeredMessage = converter.Convert(batchedOperation, new RoutingOptions());
 
-            Assert.That(brokeredMessage.Properties[BrokeredMessageHeaders.EstimatedMessageSize], Is.GreaterThan(0)); 
+            Assert.That(brokeredMessage.Properties[BrokeredMessageHeaders.EstimatedMessageSize], Is.GreaterThan(0));
         }
 
         private class FakeMapper : ICanMapNamespaceNameToConnectionString
@@ -307,9 +310,9 @@ namespace NServiceBus.Azure.WindowsAzureServiceBus.Tests.Sending
             private readonly string _output;
 
             public FakeMapper()
-                : this ("input", "output")
+                : this("input", "output")
             {
-                
+
             }
 
             public FakeMapper(string input, string output)

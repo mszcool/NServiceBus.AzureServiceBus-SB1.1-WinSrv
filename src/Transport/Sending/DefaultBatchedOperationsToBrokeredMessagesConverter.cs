@@ -56,10 +56,11 @@ namespace NServiceBus.AzureServiceBus
 
         private void SetViaPartitionKeyToIncomingBrokeredMessagePartitionKey(BrokeredMessage brokeredMessage, RoutingOptions routingOptions)
         {
-            if (routingOptions.SendVia && routingOptions.ViaPartitionKey != null)
-            {
-                brokeredMessage.ViaPartitionKey = routingOptions.ViaPartitionKey;
-            }
+            // mszcool - not supported by Service Bus 1.1 for Windows Server
+            //if (routingOptions.SendVia && routingOptions.ViaPartitionKey != null)
+            //{
+            //    brokeredMessage.ViaPartitionKey = routingOptions.ViaPartitionKey;
+            //}
         }
 
         private void SetReplyToAddress(OutgoingMessage outgoingMessage, BrokeredMessage brokeredMessage)

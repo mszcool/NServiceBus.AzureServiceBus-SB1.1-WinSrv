@@ -84,7 +84,8 @@
             Assert.IsFalse(subscriptionDescription.EnableDeadLetteringOnMessageExpiration);
             Assert.IsFalse(subscriptionDescription.RequiresSession);
             Assert.AreEqual(6, subscriptionDescription.MaxDeliveryCount);
-            Assert.IsNull(subscriptionDescription.ForwardDeadLetteredMessagesTo);
+            // mszcool - not supported by Service Bus 1.1 for Windows Server
+            // Assert.IsNull(subscriptionDescription.ForwardDeadLetteredMessagesTo);
             Assert.That(subscriptionDescription.ForwardTo, Is.StringEnding(forwardToQueue));
 
             await namespaceManager.DeleteSubscriptionAsync(topicPath, subscriptionName);
@@ -325,55 +326,61 @@
         [Test]
         public async Task Should_properly_set_ForwardDeadLetteredMessagesTo_on_the_created_entity()
         {
-            var namespaceManager = new NamespaceManagerAdapter(NamespaceManager.CreateFromConnectionString(AzureServiceBusConnectionString.Value));
+            // mszcool - not supported by Service Bus 1.1 for Windows Server
+            await Task.Run(() => Assert.Inconclusive("Not supported by Service Bus 1.1 for Windows Server!"));
 
-            var topicCreator = new AzureServiceBusTopicCreator(new DefaultConfigurationValues().Apply(new SettingsHolder()));
-            var topicToForwardTo = await topicCreator.Create("topic2forward2", namespaceManager);
+            //var namespaceManager = new NamespaceManagerAdapter(NamespaceManager.CreateFromConnectionString(AzureServiceBusConnectionString.Value));
+
+            //var topicCreator = new AzureServiceBusTopicCreator(new DefaultConfigurationValues().Apply(new SettingsHolder()));
+            //var topicToForwardTo = await topicCreator.Create("topic2forward2", namespaceManager);
 
 
-            var settings = new DefaultConfigurationValues().Apply(new SettingsHolder());
-            var extensions = new TransportExtensions<AzureServiceBusTransport>(settings);
+            //var settings = new DefaultConfigurationValues().Apply(new SettingsHolder());
+            //var extensions = new TransportExtensions<AzureServiceBusTransport>(settings);
 
-            extensions.UseTopology<ForwardingTopology>().Subscriptions().ForwardDeadLetteredMessagesTo(topicToForwardTo.Path);
+            //extensions.UseTopology<ForwardingTopology>().Subscriptions().ForwardDeadLetteredMessagesTo(topicToForwardTo.Path);
 
-            var creator = new AzureServiceBusForwardingSubscriptionCreator(settings);
+            //var creator = new AzureServiceBusForwardingSubscriptionCreator(settings);
 
-            const string subscriptionName = "endpoint13";
-            await creator.Create(topicPath, subscriptionName, metadata, sqlFilter, namespaceManager, forwardToQueue);
+            //const string subscriptionName = "endpoint13";
+            //await creator.Create(topicPath, subscriptionName, metadata, sqlFilter, namespaceManager, forwardToQueue);
 
-            var foundDescription = await namespaceManager.GetSubscription(topicPath, subscriptionName);
+            //var foundDescription = await namespaceManager.GetSubscription(topicPath, subscriptionName);
 
-            Assert.That(foundDescription.ForwardDeadLetteredMessagesTo.EndsWith(topicToForwardTo.Path));
+            //Assert.That(foundDescription.ForwardDeadLetteredMessagesTo.EndsWith(topicToForwardTo.Path));
 
-            await namespaceManager.DeleteSubscriptionAsync(topicPath, subscriptionName);
-            await namespaceManager.DeleteTopic(topicToForwardTo.Path);
+            //await namespaceManager.DeleteSubscriptionAsync(topicPath, subscriptionName);
+            //await namespaceManager.DeleteTopic(topicToForwardTo.Path);
         }
 
         [Test]
         public async Task Should_properly_set_ForwardDeadLetteredMessagesTo_on_the_created_entity_that_qualifies_the_condition()
         {
-            var namespaceManager = new NamespaceManagerAdapter(NamespaceManager.CreateFromConnectionString(AzureServiceBusConnectionString.Value));
+            // mszcool - not supported by Service Bus 1.1 for Windows Server
+            await Task.Run(() => Assert.Inconclusive("Not supported by Service Bus 1.1 for Windows Server!"));
 
-            var topicCreator = new AzureServiceBusTopicCreator(new DefaultConfigurationValues().Apply(new SettingsHolder()));
-            var notUsedEntity = await topicCreator.Create("topic2forward2", namespaceManager);
+            //var namespaceManager = new NamespaceManagerAdapter(NamespaceManager.CreateFromConnectionString(AzureServiceBusConnectionString.Value));
+
+            //var topicCreator = new AzureServiceBusTopicCreator(new DefaultConfigurationValues().Apply(new SettingsHolder()));
+            //var notUsedEntity = await topicCreator.Create("topic2forward2", namespaceManager);
 
 
-            var settings = new DefaultConfigurationValues().Apply(new SettingsHolder());
-            var extensions = new TransportExtensions<AzureServiceBusTransport>(settings);
+            //var settings = new DefaultConfigurationValues().Apply(new SettingsHolder());
+            //var extensions = new TransportExtensions<AzureServiceBusTransport>(settings);
 
-            extensions.UseTopology<ForwardingTopology>().Subscriptions().ForwardDeadLetteredMessagesTo(subName => subName == "endpoint14", notUsedEntity.Path);
+            //extensions.UseTopology<ForwardingTopology>().Subscriptions().ForwardDeadLetteredMessagesTo(subName => subName == "endpoint14", notUsedEntity.Path);
 
-            var creator = new AzureServiceBusForwardingSubscriptionCreator(settings);
+            //var creator = new AzureServiceBusForwardingSubscriptionCreator(settings);
 
-            const string subscriptionName = "endpoint14";
-            await creator.Create(topicPath, subscriptionName, metadata, sqlFilter, namespaceManager, forwardToQueue);
+            //const string subscriptionName = "endpoint14";
+            //await creator.Create(topicPath, subscriptionName, metadata, sqlFilter, namespaceManager, forwardToQueue);
 
-            var foundDescription = await namespaceManager.GetSubscription(topicPath, subscriptionName);
+            //var foundDescription = await namespaceManager.GetSubscription(topicPath, subscriptionName);
 
-            Assert.That(foundDescription.ForwardDeadLetteredMessagesTo.EndsWith(notUsedEntity.Path));
+            //Assert.That(foundDescription.ForwardDeadLetteredMessagesTo.EndsWith(notUsedEntity.Path));
 
-            await namespaceManager.DeleteSubscriptionAsync(topicPath, subscriptionName);
-            await namespaceManager.DeleteTopic(notUsedEntity.Path);
+            //await namespaceManager.DeleteSubscriptionAsync(topicPath, subscriptionName);
+            //await namespaceManager.DeleteTopic(notUsedEntity.Path);
         }
 
         [Test]

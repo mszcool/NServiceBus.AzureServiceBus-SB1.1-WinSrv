@@ -57,101 +57,113 @@ namespace NServiceBus.Azure.WindowsAzureServiceBus.Tests.Creation
         [Test]
         public async Task Properly_sets_ForwardDeadLetteredMessagesTo_on_the_created_entity()
         {
-            var namespaceManager = new NamespaceManagerAdapter(NamespaceManager.CreateFromConnectionString(AzureServiceBusConnectionString.Value));
+            // mszcool - not supported by Service Bus 1.1 for Windows Server
+            await Task.Run(() => Assert.Inconclusive("Not supported by Service Bus 1.1 for Windows Server!"));
 
-            // forwarding queue needs to exist before you can use it as a forwarding target
-            // needs to be created with different settings as it cannot forward to itself obviously
-            var originalsettings = new DefaultConfigurationValues().Apply(new SettingsHolder());
-            var originalcreator = new AzureServiceBusQueueCreator(originalsettings);
-            await originalcreator.Create("myotherqueue", namespaceManager);
+            //var namespaceManager = new NamespaceManagerAdapter(NamespaceManager.CreateFromConnectionString(AzureServiceBusConnectionString.Value));
 
-            // actual test
-            var settings = new DefaultConfigurationValues().Apply(new SettingsHolder());
-            var extensions = new AzureServiceBusTopologySettings(settings);
+            //// forwarding queue needs to exist before you can use it as a forwarding target
+            //// needs to be created with different settings as it cannot forward to itself obviously
+            //var originalsettings = new DefaultConfigurationValues().Apply(new SettingsHolder());
+            //var originalcreator = new AzureServiceBusQueueCreator(originalsettings);
+            //await originalcreator.Create("myotherqueue", namespaceManager);
 
-            extensions.Queues().ForwardDeadLetteredMessagesTo("myotherqueue");
+            //// actual test
+            //var settings = new DefaultConfigurationValues().Apply(new SettingsHolder());
+            //var extensions = new AzureServiceBusTopologySettings(settings);
 
-            var creator = new AzureServiceBusQueueCreator(settings);
+            //extensions.Queues().ForwardDeadLetteredMessagesTo("myotherqueue");
 
-            await creator.Create("myqueue", namespaceManager);
+            //var creator = new AzureServiceBusQueueCreator(settings);
 
-            var real = await namespaceManager.GetQueue("myqueue");
+            //await creator.Create("myqueue", namespaceManager);
 
-            Assert.IsTrue(real.ForwardDeadLetteredMessagesTo.EndsWith("myotherqueue"));
+            //var real = await namespaceManager.GetQueue("myqueue");
 
-            //cleanup 
-            await namespaceManager.DeleteQueue("myqueue");
-            await namespaceManager.DeleteQueue("myotherqueue");
+            //Assert.IsTrue(real.ForwardDeadLetteredMessagesTo.EndsWith("myotherqueue"));
+
+            ////cleanup 
+            //await namespaceManager.DeleteQueue("myqueue");
+            //await namespaceManager.DeleteQueue("myotherqueue");
         }
 
         [Test]
         public async Task Properly_sets_ForwardDeadLetteredMessagesTo_on_the_created_entity_that_qualifies_condition()
         {
-            var namespaceManager = new NamespaceManagerAdapter(NamespaceManager.CreateFromConnectionString(AzureServiceBusConnectionString.Value));
+            // mszcool - not supported by Service Bus 1.1 for Windows Server
+            await Task.Run(() => Assert.Inconclusive("Not supported by Service Bus 1.1 for Windows Server!"));
 
-            var settings = new DefaultConfigurationValues().Apply(new SettingsHolder());
-            var extensions = new AzureServiceBusTopologySettings(settings);
+            //var namespaceManager = new NamespaceManagerAdapter(NamespaceManager.CreateFromConnectionString(AzureServiceBusConnectionString.Value));
 
-            extensions.Queues().ForwardDeadLetteredMessagesTo(name => name == "myqueue", "myotherqueue");
+            //var settings = new DefaultConfigurationValues().Apply(new SettingsHolder());
+            //var extensions = new AzureServiceBusTopologySettings(settings);
 
-            var creator = new AzureServiceBusQueueCreator(settings);
+            //extensions.Queues().ForwardDeadLetteredMessagesTo(name => name == "myqueue", "myotherqueue");
 
-            await creator.Create("myotherqueue", namespaceManager);
-            await creator.Create("myqueue", namespaceManager);
+            //var creator = new AzureServiceBusQueueCreator(settings);
 
-            var real = await namespaceManager.GetQueue("myqueue");
-            var forwardReal = await namespaceManager.GetQueue("myotherqueue");
+            //await creator.Create("myotherqueue", namespaceManager);
+            //await creator.Create("myqueue", namespaceManager);
 
-            Assert.IsTrue(real.ForwardDeadLetteredMessagesTo.EndsWith("myotherqueue"));
-            Assert.IsTrue(string.IsNullOrEmpty(forwardReal.ForwardDeadLetteredMessagesTo));
+            //var real = await namespaceManager.GetQueue("myqueue");
+            //var forwardReal = await namespaceManager.GetQueue("myotherqueue");
 
-            //cleanup 
-            await namespaceManager.DeleteQueue("myqueue");
-            await namespaceManager.DeleteQueue("myotherqueue");
+            //Assert.IsTrue(real.ForwardDeadLetteredMessagesTo.EndsWith("myotherqueue"));
+            //Assert.IsTrue(string.IsNullOrEmpty(forwardReal.ForwardDeadLetteredMessagesTo));
+
+            ////cleanup 
+            //await namespaceManager.DeleteQueue("myqueue");
+            //await namespaceManager.DeleteQueue("myotherqueue");
         }
 
         [Test]
         public async Task Properly_sets_EnableExpress_on_the_created_entity()
         {
-            var namespaceManager = new NamespaceManagerAdapter(NamespaceManager.CreateFromConnectionString(AzureServiceBusConnectionString.Value));
+            // mszcool - not supported by Service Bus 1.1 for Windows Server
+            await Task.Run(() => Assert.Inconclusive("Not supported by Service Bus 1.1 for Windows Server!"));
 
-            var settings = new DefaultConfigurationValues().Apply(new SettingsHolder());
-            var extensions = new AzureServiceBusTopologySettings(settings);
+            //var namespaceManager = new NamespaceManagerAdapter(NamespaceManager.CreateFromConnectionString(AzureServiceBusConnectionString.Value));
 
-            extensions.Queues().EnableExpress(true);
+            //var settings = new DefaultConfigurationValues().Apply(new SettingsHolder());
+            //var extensions = new AzureServiceBusTopologySettings(settings);
 
-            var creator = new AzureServiceBusQueueCreator(settings);
+            //extensions.Queues().EnableExpress(true);
 
-            await creator.Create("myqueue", namespaceManager);
+            //var creator = new AzureServiceBusQueueCreator(settings);
 
-            var real = await namespaceManager.GetQueue("myqueue");
+            //await creator.Create("myqueue", namespaceManager);
 
-            Assert.IsTrue(real.EnableExpress);
+            //var real = await namespaceManager.GetQueue("myqueue");
 
-            //cleanup 
-            await namespaceManager.DeleteQueue("myqueue");
+            //Assert.IsTrue(real.EnableExpress);
+
+            ////cleanup 
+            //await namespaceManager.DeleteQueue("myqueue");
         }
 
         [Test]
         public async Task Properly_sets_EnableExpress_on_the_created_entity_that_qualifies_condition()
         {
-            var namespaceManager = new NamespaceManagerAdapter(NamespaceManager.CreateFromConnectionString(AzureServiceBusConnectionString.Value));
+            // mszcool - not supported by Service Bus 1.1 for Windows Server
+            await Task.Run(() => Assert.Inconclusive("Not supported by Service Bus 1.1 for Windows Server!"));
 
-            var settings = new DefaultConfigurationValues().Apply(new SettingsHolder());
-            var extensions = new AzureServiceBusTopologySettings(settings);
+            //var namespaceManager = new NamespaceManagerAdapter(NamespaceManager.CreateFromConnectionString(AzureServiceBusConnectionString.Value));
 
-            extensions.Queues().EnableExpress(name => name == "myqueue", true);
+            //var settings = new DefaultConfigurationValues().Apply(new SettingsHolder());
+            //var extensions = new AzureServiceBusTopologySettings(settings);
 
-            var creator = new AzureServiceBusQueueCreator(settings);
+            //extensions.Queues().EnableExpress(name => name == "myqueue", true);
 
-            await creator.Create("myqueue", namespaceManager);
+            //var creator = new AzureServiceBusQueueCreator(settings);
 
-            var real = await namespaceManager.GetQueue("myqueue");
+            //await creator.Create("myqueue", namespaceManager);
 
-            Assert.IsTrue(real.EnableExpress, "Queue should be marked as express, but it wasn't.");
+            //var real = await namespaceManager.GetQueue("myqueue");
 
-            //cleanup 
-            await namespaceManager.DeleteQueue("myqueue");
+            //Assert.IsTrue(real.EnableExpress, "Queue should be marked as express, but it wasn't.");
+
+            ////cleanup 
+            //await namespaceManager.DeleteQueue("myqueue");
         }
 
 
@@ -180,26 +192,29 @@ namespace NServiceBus.Azure.WindowsAzureServiceBus.Tests.Creation
         [Test]
         public async Task Properly_sets_EnablePartitioning_on_the_created_entity()
         {
-            var namespaceManager = new NamespaceManagerAdapter(NamespaceManager.CreateFromConnectionString(AzureServiceBusConnectionString.Value));
+            // mszcool - not supported by Service Bus 1.1 for Windows Server
+            await Task.Run(() => Assert.Inconclusive("Not supported by Service Bus 1.1 for Windows Server!"));
 
-            //make sure any previously created queues with this name are removed as the EnablePartitioning cannot be updated
-            await namespaceManager.DeleteQueue("myqueue");
+            //var namespaceManager = new NamespaceManagerAdapter(NamespaceManager.CreateFromConnectionString(AzureServiceBusConnectionString.Value));
 
-            var settings = new DefaultConfigurationValues().Apply(new SettingsHolder());
-            var extensions = new AzureServiceBusTopologySettings(settings);
+            ////make sure any previously created queues with this name are removed as the EnablePartitioning cannot be updated
+            //await namespaceManager.DeleteQueue("myqueue");
 
-            extensions.Queues().EnablePartitioning(true);
+            //var settings = new DefaultConfigurationValues().Apply(new SettingsHolder());
+            //var extensions = new AzureServiceBusTopologySettings(settings);
 
-            var creator = new AzureServiceBusQueueCreator(settings);
+            //extensions.Queues().EnablePartitioning(true);
 
-            await creator.Create("myqueue", namespaceManager);
+            //var creator = new AzureServiceBusQueueCreator(settings);
 
-            var real = await namespaceManager.GetQueue("myqueue");
+            //await creator.Create("myqueue", namespaceManager);
 
-            Assert.IsTrue(real.EnablePartitioning);
+            //var real = await namespaceManager.GetQueue("myqueue");
 
-            //cleanup 
-            await namespaceManager.DeleteQueue("myqueue");
+            //Assert.IsTrue(real.EnablePartitioning);
+
+            ////cleanup 
+            //await namespaceManager.DeleteQueue("myqueue");
         }
 
         [Test]
@@ -436,7 +451,8 @@ namespace NServiceBus.Azure.WindowsAzureServiceBus.Tests.Creation
             extensions.Queues().DescriptionFactory((queuePath, readOnlySettings) => new QueueDescription(queuePath)
             {
                 AutoDeleteOnIdle = TimeSpan.FromMinutes(100),
-                EnableExpress = true
+                // mszcool - not supported by Service Bus 1.1 for Windows Server
+                // EnableExpress = true
             });
 
             var creator = new AzureServiceBusQueueCreator(settings);
@@ -457,7 +473,8 @@ namespace NServiceBus.Azure.WindowsAzureServiceBus.Tests.Creation
             {
                 LockDuration = TimeSpan.FromSeconds(50),
                 RequiresDuplicateDetection = true,
-                EnablePartitioning = true,
+                // mszcool - not supported by Service Bus 1.1 for Windows Server
+                // EnablePartitioning = true,
                 RequiresSession = true,
             });
 
@@ -467,7 +484,8 @@ namespace NServiceBus.Azure.WindowsAzureServiceBus.Tests.Creation
             {
                 LockDuration = TimeSpan.FromSeconds(50),
                 RequiresDuplicateDetection = false,
-                EnablePartitioning = false,
+                // mszcool - not supported by Service Bus 1.1 for Windows Server
+                // EnablePartitioning = false,
                 RequiresSession = false,
             });
 

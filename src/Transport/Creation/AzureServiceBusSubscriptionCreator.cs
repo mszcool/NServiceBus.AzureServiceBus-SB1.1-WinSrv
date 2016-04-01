@@ -30,8 +30,9 @@
                     LockDuration = setting.GetOrDefault<TimeSpan>(WellKnownConfigurationKeys.Topology.Resources.Subscriptions.LockDuration),
                     MaxDeliveryCount = setting.GetOrDefault<int>(WellKnownConfigurationKeys.Topology.Resources.Subscriptions.MaxDeliveryCount),
                     RequiresSession = setting.GetOrDefault<bool>(WellKnownConfigurationKeys.Topology.Resources.Subscriptions.RequiresSession),
-                    
-                    ForwardDeadLetteredMessagesTo = setting.GetConditional<string>(subscriptionName, WellKnownConfigurationKeys.Topology.Resources.Subscriptions.ForwardDeadLetteredMessagesTo)
+
+                    // mszcool - not supported by Service Bus 1.1 for Windows Server
+                    // ForwardDeadLetteredMessagesTo = setting.GetConditional<string>(subscriptionName, WellKnownConfigurationKeys.Topology.Resources.Subscriptions.ForwardDeadLetteredMessagesTo)
                 };
             }
         }
@@ -146,8 +147,9 @@
                    || existingDescription.EnableDeadLetteringOnMessageExpiration != newDescription.EnableDeadLetteringOnMessageExpiration
                    || existingDescription.EnableDeadLetteringOnFilterEvaluationExceptions != newDescription.EnableDeadLetteringOnFilterEvaluationExceptions
                    || existingDescription.MaxDeliveryCount != newDescription.MaxDeliveryCount
-                   || existingDescription.EnableBatchedOperations != newDescription.EnableBatchedOperations
-                   || existingDescription.ForwardDeadLetteredMessagesTo != newDescription.ForwardDeadLetteredMessagesTo;
+                   || existingDescription.EnableBatchedOperations != newDescription.EnableBatchedOperations;
+                   // mszcool - not supported by Service Bus 1.1 for Windows Server
+                   // || existingDescription.ForwardDeadLetteredMessagesTo != newDescription.ForwardDeadLetteredMessagesTo;
         }
     }
 }

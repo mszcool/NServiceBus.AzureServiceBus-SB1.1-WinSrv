@@ -56,7 +56,8 @@ namespace NServiceBus.AzureServiceBus
             options = new OnMessageOptions
             {
                 AutoComplete = true,
-                AutoRenewTimeout = settings.Get<TimeSpan>(WellKnownConfigurationKeys.Connectivity.MessageReceivers.AutoRenewTimeout),
+                // mszcool - not supported by Service Bus 1.1 for Windows Server
+                // AutoRenewTimeout = settings.Get<TimeSpan>(WellKnownConfigurationKeys.Connectivity.MessageReceivers.AutoRenewTimeout),
                 MaxConcurrentCalls = maximumConcurrency
             };
 
@@ -74,8 +75,9 @@ namespace NServiceBus.AzureServiceBus
 
             if (!stopping) //- It is raised when the underlying connection closes because of our close operation 
             {
-                logger.InfoFormat("OptionsOnExceptionReceived invoked, action: {0}, exception: {1}", exceptionReceivedEventArgs.Action, exceptionReceivedEventArgs.Exception);
-
+                // mszcool - not supported by Service Bus 1.1 for Windows Server
+                // logger.InfoFormat("OptionsOnExceptionReceived invoked, action: {0}, exception: {1}", exceptionReceivedEventArgs.Action, exceptionReceivedEventArgs.Exception);
+                logger.InfoFormat("OptionsOnExceptionReceived invoked, exception: {0}", exceptionReceivedEventArgs.Exception);
                 errorCallback?.Invoke(exceptionReceivedEventArgs.Exception).GetAwaiter().GetResult();
             }
         }

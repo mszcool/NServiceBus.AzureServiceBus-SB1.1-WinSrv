@@ -27,12 +27,14 @@
                     DuplicateDetectionHistoryTimeWindow = setting.GetOrDefault<TimeSpan>(WellKnownConfigurationKeys.Topology.Resources.Topics.DuplicateDetectionHistoryTimeWindow),
                     EnableBatchedOperations = setting.GetOrDefault<bool>(WellKnownConfigurationKeys.Topology.Resources.Topics.EnableBatchedOperations),
                     EnableFilteringMessagesBeforePublishing = setting.GetOrDefault<bool>(WellKnownConfigurationKeys.Topology.Resources.Topics.EnableFilteringMessagesBeforePublishing),
-                    EnablePartitioning = setting.GetOrDefault<bool>(WellKnownConfigurationKeys.Topology.Resources.Topics.EnablePartitioning),
+                    // mszcool - not supported by Service Bus 1.1 for Windows Server
+                    // EnablePartitioning = setting.GetOrDefault<bool>(WellKnownConfigurationKeys.Topology.Resources.Topics.EnablePartitioning),
                     MaxSizeInMegabytes = setting.GetOrDefault<long>(WellKnownConfigurationKeys.Topology.Resources.Topics.MaxSizeInMegabytes),
                     RequiresDuplicateDetection = setting.GetOrDefault<bool>(WellKnownConfigurationKeys.Topology.Resources.Topics.RequiresDuplicateDetection),
                     SupportOrdering = setting.GetOrDefault<bool>(WellKnownConfigurationKeys.Topology.Resources.Topics.SupportOrdering),
 
-                    EnableExpress = setting.GetConditional<bool>(topicPath, WellKnownConfigurationKeys.Topology.Resources.Topics.EnableExpress),
+                    // mszcool - not supported by Service Bus 1.1 for Windows Server
+                    // EnableExpress = setting.GetConditional<bool>(topicPath, WellKnownConfigurationKeys.Topology.Resources.Topics.EnableExpress),
                 };
             }
         }
@@ -128,10 +130,11 @@
             {
                 logger.Warn("RequiresDuplicateDetection cannot be update on the existing queue!");
             }
-            if (existingDescription.EnablePartitioning != newDescription.EnablePartitioning)
-            {
-                logger.Warn("EnablePartitioning cannot be update on the existing queue!");
-            }
+            // mszcool - not supported by Service Bus 1.1 for Windows Server
+            //if (existingDescription.EnablePartitioning != newDescription.EnablePartitioning)
+            //{
+            //    logger.Warn("EnablePartitioning cannot be update on the existing queue!");
+            //}
 
             return existingDescription.AutoDeleteOnIdle != newDescription.AutoDeleteOnIdle
                    || existingDescription.MaxSizeInMegabytes != newDescription.MaxSizeInMegabytes
@@ -139,7 +142,8 @@
                    || existingDescription.DuplicateDetectionHistoryTimeWindow != newDescription.DuplicateDetectionHistoryTimeWindow
                    || existingDescription.EnableBatchedOperations != newDescription.EnableBatchedOperations
                    || existingDescription.SupportOrdering != newDescription.SupportOrdering
-                   || existingDescription.EnableExpress != newDescription.EnableExpress
+                   // mszcool - not supported by Service Bus 1.1 for Windows Server
+                   // || existingDescription.EnableExpress != newDescription.EnableExpress
                    || existingDescription.EnableFilteringMessagesBeforePublishing != newDescription.EnableFilteringMessagesBeforePublishing;
         }
 
